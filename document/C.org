@@ -1,0 +1,66 @@
+*  容易忘记的知识点
+** sizeof
+   sizeof返回值是 unsigned 的, 在做比较的时候需要小心
+   sizeof是一个操作符, 不是函数, 因此在计算类似 sizeof(i++) 时, 并不会将i的加一, 因为求其i++的类型size,
+   这是一件可以在程序运行前(编译时)完成的事情, 即sizeof(i++)直接被4给取代了.
+** 命名
+   变量名, 函数名等不能含有 -(减号) 等特殊字符
+** continue
+   例如代码:
+   #include <stdio.h>
+   enum {false, true};
+
+   int main() {
+       int i = 1;
+       do {
+           printf("%d\n", i);
+           ++i;
+           if (i < 15) 
+               continue
+       }while(false);
+       return 0;
+   }
+   结果输出1: 因为continue的含义是不执行循环体之后的语句, 而直接到循环点.
+** 宏
+   #include <stdio.h>
+   #define f(a,b) a##b
+   #define g(a)   #a
+   #define h(a) g(a)
+ 
+   int main()
+   {
+       printf("%s\n", h(f(1,2)));
+       printf("%s\n", g(f(1,2)));
+       // printf("%s\n", f(g(i), h(2))); // mac 10.9 Apple LLVM version5.0, 预处理器无法展开宏
+       return 0;
+   }
+   输出结果: 12, f(1,2)
+   解释: http://blog.csdn.net/kingkai620/article/details/5905606
+   # 将右边的参数作整体的字符串替换
+   对于# 的参数, 即便是另一个宏, 也不展开, 任然作为字符串字面信息输出.
+   对于h(f(1, 2)), 由于h(a)是非# 或## 的普通宏, 需要先宏展开其参数
+   ## 将左右两边的参数做整体的字符串拼接替换.
+   对于##, 即便是另一个宏也不会展开宏, 经过## 替换后的内容必须能够作为一个合法的变量
+** switch
+   switch语句中, 如果default 拼写不正确时, 会将其当作一个标号来处理.
+** 函数的定义
+   int foobar1(void);
+   int foobar2();
+   在C语言中上述两个函数的函数原型是不一样的. foobar1 调用时不能有参数, foobar2调用时可以有多个参数
+** 逗号表达式
+   在初始化变量时, 如果不加括号, 则逗号不会作为逗号表达式来处理的, 例子:
+   int a = 1, 2; // 不是逗号表达式, 可以改为 int a = (1, 2)
+** printf
+   printf的返回值是输出字符的个数
+   当printf由于类型不匹配时, 会将float转换为double类型
+** 浮点数在计算机中得表示
+   float类型的浮点数: 占4个字节, 1位符号位(s), 8位指数(e),23位尾数(m,共32位)
+   12.5f在内存中存储是: 0×41480000
+   double类型的浮点数: 占8个字节, 1位符号位(s), 11位指数(e), 52位尾数(m,共64位)
+   12.5d在内存中存储是: 0×4029000000000000
+   具体的浮点数存储方式可以参看http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html
+   具体计算方法如下:
+   计算机中得浮点数存储标准是: 根据国际标准IEEE 754, 
+   
+* MakeFile
+  参见 referencedata/makefile.pdf

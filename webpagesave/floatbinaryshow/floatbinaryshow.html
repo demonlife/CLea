@@ -1,0 +1,2100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0078)http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html -->
+<html xmlns="http://www.w3.org/1999/xhtml" id="sixapart-standard"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+<meta name="generator" content="Movable Type  5.2.2">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="./floatbinaryshow_files/styles.css" type="text/css">
+<link rel="start" href="http://www.ruanyifeng.com/blog/" title="Home">
+<link rel="alternate" type="application/atom+xml" title="Recent Entries" href="http://feeds.feedburner.com/ruanyifeng">
+<script type="text/javascript" src="./floatbinaryshow_files/mt.js"></script><style type="text/css"></style>
+<!--
+<rdf:RDF xmlns="http://web.resource.org/cc/"
+         xmlns:dc="http://purl.org/dc/elements/1.1/"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<Work rdf:about="http://www.ruanyifeng.com/blog/2013/06/emmet_and_haml.html">
+<dc:title>HTML代码简写法：Emmet和Haml</dc:title>
+<dc:description>HTML代码写起来很费事，因为它的标签多。...</dc:description>
+<dc:creator>阮一峰</dc:creator>
+<dc:date>2013-06-11T17:23:05+08:00</dc:date>
+<license rdf:resource="http://creativecommons.org/licenses/by-nc-nd/3.0/" />
+</Work>
+<License rdf:about="http://creativecommons.org/licenses/by-nc-nd/3.0/">
+</License>
+</rdf:RDF>
+-->
+
+
+    
+    <link rel="prev bookmark" href="http://www.ruanyifeng.com/blog/2010/06/zine.html" title="创业途径：手工杂志">
+    <link rel="next bookmark" href="http://www.ruanyifeng.com/blog/2010/06/a_turkey_poster.html" title="一张土耳其海报">
+    
+    <title>浮点数的二进制表示 - 阮一峰的网络日志</title>
+<script src="./floatbinaryshow_files/bsStatic.js" type="text/javascript" charset="utf-8"></script><script src="./floatbinaryshow_files/bs-engine.js" type="text/javascript" charset="utf-8"></script><script></script><script></script><style type="text/css">a.bshareDiv,#bsPanel,#bsMorePanel,#bshareF{border:none;background:none;padding:0;margin:0;font:12px Helvetica,Calibri,Tahoma,Arial,宋体,sans-serif;line-height:14px;}#bsPanel div,#bsMorePanel div,#bshareF div{display:block;}.bsRlogo .bsPopupAwd,.bsRlogoSel .bsPopupAwd,.bsLogo .bsPopupAwd,.bsLogoSel .bsPopupAwd{line-height:16px !important;}a.bshareDiv div,#bsFloatTab div{*display:inline;zoom:1;display:inline-block;}a.bshareDiv img,a.bshareDiv div,a.bshareDiv span,a.bshareDiv a,#bshareF table,#bshareF tr,#bshareF td{text-decoration:none;background:none;margin:0;padding:0;border:none;line-height:1.2}a.bshareDiv span{display:inline;float:none;}div.buzzButton{cursor:pointer;font-weight:bold;}.buzzButton .shareCount a{color:#333}.bsStyle1 .shareCount a{color:#fff}span.bshareText{white-space:nowrap;}span.bshareText:hover{text-decoration:underline;}a.bshareDiv .bsPromo,div.bshare-custom .bsPromo{display:none;position:absolute;z-index:100;}a.bshareDiv .bsPromo.bsPromo1,div.bshare-custom .bsPromo.bsPromo1{width:51px;height:18px;top:-18px;left:0;line-height:16px;font-size:12px !important;font-weight:normal !important;color:#fff;text-align:center;background:url(http://static.bshare.cn/frame/images/bshare_box_sprite2.gif) no-repeat 0 -606px;}div.bshare-custom .bsPromo.bsPromo2{background:url(http://static.bshare.cn/frame/images/bshare_promo_sprite.gif) no-repeat;cursor:pointer;}</style><style type="text/css">.bsBox{display:none;z-index:100000001;font-size:12px;background:url(http://static.bshare.cn/frame/images//background-opaque-dark.gif) !important;padding:6px !important;-moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px;}.bsClose{_overflow:hidden;cursor:pointer;position:absolute;z-index:10000000;color:#666;font-weight:bold;font-family:Helvetica,Arial;font-size:14px;line-height:20px;}.bsTop{color:#666;background:#f2f2f2;height:24px;line-height:24px;border-bottom:1px solid #e8e8e8;}.bsTop span{float:left;}.bsFrameDiv,#bsMorePanel{border:none;background:#fff;}.bsReturn{float:right;*margin-right:20px;margin-right:36px;text-align:right;cursor:pointer;line-height:24px;color:#666;opacity:0.5;}#bsReturn:hover{text-decoration:underline;opacity:1;}</style><script src="./floatbinaryshow_files/bsMore.js" type="text/javascript" charset="utf-8"></script><script src="./floatbinaryshow_files/bshareS1.js" type="text/javascript" charset="utf-8"></script><meta name="chromesniffer" id="chromesniffer_meta" content="{&quot;Movable Type&quot;:-1}"><script type="text/javascript" src="chrome-extension://homgcnaoacgigpkkljjjekpignblkeae/detector.js"></script><style type="text/css">div.bsClear{clear:both;height:0;line-height:0;overflow:hidden;font-size:0;}.bsSearchDiv{padding:5px 15px;background-color:#fafafa;}.bFind-wrapper-top{background:#fff;border-color:#ccc #aaa #aaa #ccc;border-style:solid;border-width:1px;height:16px;padding:4px;margin:0;}.bFind-wrapper-top input{padding:0 !important;border:none !important;box-shadow:none !important;line-height:16px !important;}.bFind-placeholder{background:url("http://static.bshare.cn/css/images/search-icon.gif") no-repeat;display:block;float:left;height:16px;width:16px;}.bFind{background:none;border:none;float:left;font-size:11px !important;height:16px !important;margin-left:3px;outline:none;padding:0;width:400px;}.bsPlatDiv{height:322px;background:#fff;overflow:auto;padding:0 15px;}#bsLogoList{display:block;list-style:none;overflow:hidden;margin:0;padding:0;}#bsLogoList li{float:left;display:inline-block;width:71px;text-align:center;font-size:12px;height:80px;margin:0 !important;}#bsLogoList .bsPlatIcon{cursor:pointer;display:block !important;text-align:center;}#bsLogoList .bsPlatImg{width:32px;height:32px;border:none !important;display:inline-block;}#bsLogoList .bsPlatImg:hover{-moz-border-radius:7px;-webkit-border-radius:7px;border-radius:7px;box-shadow:0 0 15px #a7a8ac;}#bsLogoList .bsPlatName{white-space:nowrap;text-overflow:ellipsis;overflow:hidden;text-align:center;color:#333 !important;margin-top:2px;line-height:140%;*width:70px;}#bsLogoList .bsPromoM{text-align:center;}.bsFooterDiv{height:24px;line-height:24px;padding:0 15px;border-top:1px solid #e8e8e8;background:#f2f2f2;text-align:right;}a.bsLogoLink{color:#666;}.bsLogoLink:hover{text-decoration:underline;}.bsPromoM{background:url(http://static.bshare.cn/frame/images//bshare_box_sprite2.gif) no-repeat top left;}.bsNew,.bsHot,.bsRec,.bsAwd{background-position:0 -552px;width:19px;margin:5px auto 1px;line-height:16px;height:18px;font-size:12px;color:#fff;overflow:hidden;}.bsNew{background-position:0 -570px;}.bsRec{width:30px;background-position:0 -588px;}.bsAwd{background:url(http://static.bshare.cn/frame/images//promot/promote.gif) no-repeat;}</style><script src="./floatbinaryshow_files/bshare_view" type="text/javascript" charset="utf-8"></script><style type="text/css">a.bsSiteLink{text-decoration:none;color:#666;}a.bsSiteLink:hover{text-decoration:underline;}a.bshareDiv{overflow:hidden;height:16px;line-height:18px;font-size:14px;color:#333;padding-left:0;}a.bshareDiv:hover{text-decoration:none;}div.bsTitle{padding:0 8px;border-bottom:1px solid #e8e8e8;color:#666;background:#f2f2f2;text-align:left;}div.buzzButton{cursor:pointer;}div.bsRlogo,div.bsRlogoSel{width:68px;float:left;margin:0;padding:2px 0;}div.bsRlogo a,div.bsRlogoSel a{float:left;}div.bsLogo,div.bsLogoSel{float:left;width:111px;text-align:left;height:auto;padding:2px 4px;margin:2px 0;white-space:nowrap;overflow:hidden;}div.bsLogoSel,div.bsRlogoSel{border:1px solid #ddd;background:#f1f1f1;}div.bsLogo,div.bsRlogo{border:1px solid #fff;background:#fff;}div.bsLogo a,div.bsLogoSel a{display:block;height:16px;line-height:16px;padding:0 0 0 24px;text-decoration:none;float:left;overflow:hidden;}div.bsLogoSel a,div.bsRlogoSel a{color:#000;border:none;}div.bsLogo a,div.bsRlogo a{color:#666;border:none;}div.bsLogoLink{width:121px;overflow:hidden;background:#FFF;float:left;margin:3px 0;}#bsLogin{float:right;text-align:right;overflow:hidden;height:100%;}#bsPanel{position:absolute;z-index:100000000;font-size:12px;width:258px;background:url(http://static.bshare.cn/frame/images/background-opaque-dark.png) !important;padding:6px !important;-moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px;}div.bsClear{clear:both;height:0;line-height:0;font-size:0;overflow:hidden;}div.bsPopupAwd{background:url(http://static.bshare.cn/frame/images//bshare_box_sprite2.gif) no-repeat top left;background-position:0 -624px;width:18px;padding-left:3px;text-align:center;float:left;margin-left: 2px;height:15px;font-size:12px;color:#fff;overflow:hidden;}div.bsRlogo .bsPopupAwd,div.bsRlogoSel .bsPopupAwd{float:left;margin:5px 0 0 -14px;}</style><style type="text/css">a.bsSiteLink{text-decoration:none;color:#666;}a.bsSiteLink:hover{text-decoration:underline;}a.bshareDiv{overflow:hidden;height:16px;line-height:18px;font-size:14px;color:#333;padding-left:0;}a.bshareDiv:hover{text-decoration:none;}div.bsTitle{padding:0 8px;border-bottom:1px solid #e8e8e8;color:#666;background:#f2f2f2;text-align:left;}div.buzzButton{cursor:pointer;}div.bsRlogo,div.bsRlogoSel{width:68px;float:left;margin:0;padding:2px 0;}div.bsRlogo a,div.bsRlogoSel a{float:left;}div.bsLogo,div.bsLogoSel{float:left;width:111px;text-align:left;height:auto;padding:2px 4px;margin:2px 0;white-space:nowrap;overflow:hidden;}div.bsLogoSel,div.bsRlogoSel{border:1px solid #ddd;background:#f1f1f1;}div.bsLogo,div.bsRlogo{border:1px solid #fff;background:#fff;}div.bsLogo a,div.bsLogoSel a{display:block;height:16px;line-height:16px;padding:0 0 0 24px;text-decoration:none;float:left;overflow:hidden;}div.bsLogoSel a,div.bsRlogoSel a{color:#000;border:none;}div.bsLogo a,div.bsRlogo a{color:#666;border:none;}div.bsLogoLink{width:121px;overflow:hidden;background:#FFF;float:left;margin:3px 0;}#bsLogin{float:right;text-align:right;overflow:hidden;height:100%;}#bsPanel{position:absolute;z-index:100000000;font-size:12px;width:258px;background:url(http://static.bshare.cn/frame/images/background-opaque-dark.png) !important;padding:6px !important;-moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px;}div.bsClear{clear:both;height:0;line-height:0;font-size:0;overflow:hidden;}div.bsPopupAwd{background:url(http://static.bshare.cn/frame/images//bshare_box_sprite2.gif) no-repeat top left;background-position:0 -624px;width:18px;padding-left:3px;text-align:center;float:left;margin-left: 2px;height:15px;font-size:12px;color:#fff;overflow:hidden;}div.bsRlogo .bsPopupAwd,div.bsRlogoSel .bsPopupAwd{float:left;margin:5px 0 0 -14px;}</style><script src="./floatbinaryshow_files/bshare_click" type="text/javascript" charset="utf-8"></script></head>
+<body id="scrapbook" class="mt-entry-archive one-column" onload="individualArchivesOnLoad(commenter_name)">
+    <div id="container">
+        <div id="container-inner">
+
+            <div id="header">
+    <div id="header-inner">
+        <div id="header-content">
+
+
+            <div id="header-name">阮一峰的网络日志 <span id="site_location"> » <a href="http://www.ruanyifeng.com/blog/" accesskey="1">首页</a></span><span id="site_archive"> » <a href="http://www.ruanyifeng.com/blog/archives.html">档案</a></span>
+</div>
+
+<div id="google_search">
+<!-- SiteSearch Google -->
+<form action="http://www.ruanyifeng.com/blog/search.html" id="cse-search-box">
+      <div>
+        <input type="hidden" name="cx" value="016304377626642577906:b_e9skaywzq">
+    <input type="hidden" name="cof" value="FORID:11">
+    <input type="hidden" name="ie" value="UTF-8">
+        <input type="text" name="q" size="20" class="searchbox" id="sbi" value="">
+        <input type="image" src="./floatbinaryshow_files/top_search_submit.gif" class="searchbox_submit" value="" alt="搜索" name="sa">
+      </div>
+    </form>
+<!-- SiteSearch Google -->
+</div>
+<div id="feed_icon">
+<a href="http://www.ruanyifeng.com/feed.html" title="订阅Feed">
+<img src="./floatbinaryshow_files/feed-icon32x32.png" alt="" style="border: 0pt none;">
+</a></div>
+
+        </div>
+    </div>
+</div>
+
+
+
+            <div id="content">
+                <div id="content-inner">
+
+
+                    <div id="alpha">
+                        <div id="alpha-inner">
+
+
+                            <div id="entry-1407" class="entry-asset asset hentry">
+                                <div class="asset-header">
+<div class="asset-nav entry-nav">
+
+<div class="entry-location">
+<ul>
+<li>上一篇：<a href="http://www.ruanyifeng.com/blog/2010/06/zine.html" title="创业途径：手工杂志">创业途径：手工杂志&nbsp;&nbsp;</a></li>
+<li>下一篇：<a href="http://www.ruanyifeng.com/blog/2010/06/a_turkey_poster.html" title="一张土耳其海报">一张土耳其海报&nbsp;&nbsp;&nbsp;&nbsp;</a></li>
+</ul>
+</div>
+
+
+
+    
+                                    <div class="entry-categories">
+                                        <p>分类<span class="delimiter">：</span></p>
+                                        <ul>
+                                            <li><a href="http://www.ruanyifeng.com/blog/computer/" rel="tag">理解计算机</a></li>
+                                        </ul>
+                                    </div>
+    
+
+
+
+                                            
+</div>
+                                </div>
+<article class="hentry">
+                                    <h1 id="page-title" class="asset-name entry-title">浮点数的二进制表示</h1>
+                                            <div id="share_button" style="float:right;padding-right:2em;padding-top:1em;"><a class="bshareDiv" href="http://www.bshare.cn/share" style="display: block; text-decoration: none; padding: 0px; margin: 0px; font-size: 12px; height: 21px; width: 51px;"><div class="bsPromo bsPromo1"></div><div class="buzzButton bsStyle10" style="height:21px;color:#333;;background:transparent url(http://static.bshare.cn/frame/images/button_custom10-zh-Orange.gif) no-repeat;text-align:center;width:51px;"></div><div style="clear:both;"></div></a><script type="text/javascript" charset="utf-8" src="./floatbinaryshow_files/buttonLite.js"></script>                                       
+<script type="text/javascript" charset="utf-8">
+bShare.addEntry({
+    title: document.getElementById("page-title").innerHTML,
+url:window.location.href
+});
+</script></div>
+                                    <div class="asset-meta">
+                                        
+
+                                            <p class="vcard author">作者： <a class="fn url" href="http://www.ruanyifeng.com/">阮一峰</a></p>
+
+<p>日期： <a href="http://www.ruanyifeng.com/blog/2010/06/"><abbr class="published" title="2010-06-06T12:42:18+08:00">2010年6月 6日</abbr></a></p>
+
+
+
+                                    </div>
+                                
+                                <div class="asset-content entry-content" id="main-content">
+
+                                    <!-- div class="asset-body" -->
+                                        <p>1.</p>
+
+<p>前几天，我在读一本C语言教材，有一道例题：</p>
+                                    <!-- /div -->
+
+
+                                    <!-- div id="more" class="asset-more" -->
+                                        <blockquote>
+
+<p><strong>　　#include &lt;stdio.h&gt;</strong></p>
+
+<p><strong>　　void main(void){</strong></p>
+
+<p><strong>　　　　int num=9;</strong> <em>/* num是整型变量，设为9 */</em></p>
+
+<p><strong>　　　　float* pFloat=&amp;num;</strong><em> /* pFloat表示num的内存地址，但是设为浮点数 */</em></p>
+
+<p><strong>　　　　printf("num的值为：%d\n",num);</strong> <em>/* 显示num的整型值 */</em></p>
+
+<p><strong>　　　　printf("*pFloat的值为：%f\n",*pFloat); </strong><em>/* 显示num的浮点值 */</em></p>
+
+<p><strong>　　　　*pFloat=9.0;</strong> <em>/* 将num的值改为浮点数 */</em></p>
+
+<p><strong>　　　　printf("num的值为：%d\n",num); </strong><em>/* 显示num的整型值 */</em></p>
+
+<p><strong>　　　　printf("*pFloat的值为：%f\n",*pFloat);</strong><em> /* 显示num的浮点值 */</em></p>
+
+<p><strong>　　}</strong></p>
+
+</blockquote>
+
+<p>运行结果如下：</p>
+
+<blockquote>
+
+<p><strong>　　num的值为：9</strong><br>
+<strong>　　*pFloat的值为：0.000000</strong><br>
+<strong>　　num的值为：1091567616</strong><br>
+<strong>　　*pFloat的值为：9.000000</strong></p>
+
+</blockquote>
+
+<p>我很惊讶，num和*pFloat在内存中明明是同一个数，为什么浮点数和整数的解读结果会差别这么大？</p>
+
+<p>要理解这个结果，一定要搞懂浮点数在计算机内部的表示方法。我读了一些资料，下面就是我的笔记。</p>
+
+<p>2.</p>
+
+<p>在讨论浮点数之前，先看一下整数在计算机内部是怎样表示的。</p>
+
+<blockquote>
+
+<p><strong>　　int num=9;</strong></p>
+
+</blockquote>
+
+<p>上面这条命令，声明了一个整数变量，类型为int，值为9（二进制写法为1001）。普通的32位计算机，用4个字节表示int变量，所以9就被保存为00000000 00000000 00000000 00001001，写成16进制就是0x00000009。</p>
+
+<p>那么，我们的问题就简化成：<strong>为什么0x00000009还原成浮点数，就成了0.000000？</strong></p>
+
+<p>3.</p>
+
+<p>根据国际标准IEEE 754，任意一个二进制浮点数V可以表示成下面的形式：</p>
+
+<blockquote>
+
+<p><strong>　　<img src="./floatbinaryshow_files/chart" style="border:none;"></strong></p>
+
+<p><strong>　　（1）(-1)^s表示符号位，当s=0，V为正数；当s=1，V为负数。</strong></p>
+
+<p><strong>　　（2）M表示有效数字，大于等于1，小于2。</strong></p>
+
+<p><strong>　　（3）2^E表示指数位。</strong></p>
+
+</blockquote>
+
+<p>举例来说，十进制的5.0，写成二进制是101.0，相当于1.01×2^2。那么，按照上面V的格式，可以得出s=0，M=1.01，E=2。</p>
+
+<p>十进制的-5.0，写成二进制是-101.0，相当于-1.01×2^2。那么，s=1，M=1.01，E=2。</p>
+
+<p>IEEE 754规定，对于32位的浮点数，最高的1位是符号位s，接着的8位是指数E，剩下的23位为有效数字M。</p>
+
+<p><img src="./floatbinaryshow_files/bg2010060601.png"></p>
+
+<p>对于64位的浮点数，最高的1位是符号位S，接着的11位是指数E，剩下的52位为有效数字M。</p>
+
+<p><img src="./floatbinaryshow_files/bg2010060602.png"></p>
+
+<p>5.</p>
+
+<p>IEEE 754对有效数字M和指数E，还有一些特别规定。</p>
+
+<p>前面说过，1≤M&lt;2，也就是说，M可以写成1.xxxxxx的形式，其中xxxxxx表示小数部分。<strong>IEEE 754规定，在计算机内部保存M时，默认这个数的第一位总是1，因此可以被舍去，只保存后面的xxxxxx部分。</strong>比如保存1.01的时候，只保存01，等到读取的时候，再把第一位的1加上去。这样做的目的，是节省1位有效数字。以32位浮点数为例，留给M只有23位，将第一位的1舍去以后，等于可以保存24位有效数字。</p>
+
+<p>至于指数E，情况就比较复杂。</p>
+
+<p>首先，E为一个无符号整数（unsigned int）。这意味着，如果E为8位，它的取值范围为0~255；如果E为11位，它的取值范围为0~2047。但是，我们知道，科学计数法中的E是可以出现负数的，<strong>所以IEEE 754规定，E的真实值必须再减去一个中间数，对于8位的E，这个中间数是127；对于11位的E，这个中间数是1023。</strong></p>
+
+<p>比如，2^10的E是10，所以保存成32位浮点数时，必须保存成10+127=137，即10001001。</p>
+
+<p>然后，指数E还可以再分成三种情况：</p>
+
+<p><strong>（1）E不全为0或不全为1。</strong>这时，浮点数就采用上面的规则表示，即指数E的计算值减去127（或1023），得到真实值，再将有效数字M前加上第一位的1。</p>
+
+<p><strong>（2）E全为0。</strong>这时，浮点数的指数E等于1-127（或者1-1023），有效数字M不再加上第一位的1，而是还原为0.xxxxxx的小数。这样做是为了表示±0，以及接近于0的很小的数字。</p>
+
+<p><strong>（3）E全为1。</strong>这时，如果有效数字M全为0，表示±无穷大（正负取决于符号位s）；如果有效数字M不全为0，表示这个数不是一个数（NaN）。</p>
+
+<p>6.</p>
+
+<p>好了，关于浮点数的表示规则，就说到这里。</p>
+
+<p>下面，让我们回到一开始的问题：<strong>为什么0x00000009还原成浮点数，就成了0.000000？</strong></p>
+
+<p>首先，将0x00000009拆分，得到第一位符号位s=0，后面8位的指数E=00000000，最后23位的有效数字M=000 0000 0000 0000 0000 1001。</p>
+
+<p>由于指数E全为0，所以符合上一节的第二种情况。因此，浮点数V就写成：</p>
+
+<blockquote>
+
+<p>　　V=(-1)^0×0.00000000000000000001001×2^(-126)=1.001×2^(-146)</p>
+
+</blockquote>
+
+<p>显然，V是一个很小的接近于0的正数，所以用十进制小数表示就是0.000000。</p>
+
+<p>7.</p>
+
+<p>再看例题的第二部分。</p>
+
+<p><strong>请问浮点数9.0，如何用二进制表示？还原成十进制又是多少？</strong></p>
+
+<p>首先，浮点数9.0等于二进制的1001.0，即1.001×2^3。</p>
+
+<p>那么，第一位的符号位s=0，有效数字M等于001后面再加20个0，凑满23位，指数E等于3+127=130，即10000010。</p>
+
+<p>所以，写成二进制形式，应该是s+E+M，即0 10000010 001 0000 0000 0000 0000 0000。这个32位的二进制数，还原成十进制，正是1091567616。</p>
+
+<p>（完）</p>
+                                    <!-- /div -->
+
+                                </div>
+    <script type="text/javascript" src="./floatbinaryshow_files/newwindow.js"></script>
+                                <div class="asset-footer">
+
+<h3>文档信息</h3>
+<ul>
+<li>版权声明：自由转载-非商用-非衍生-保持署名 | <a href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh">Creative Commons BY-NC-ND 3.0</a></li>
+<li>原文网址：<a href="./floatbinaryshow_files/floatbinaryshow.html">http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html</a></li>
+<li>最后修改时间：2014年4月14日 21:57</li>
+<li>付费支持：<a href="https://me.alipay.com/ruanyf" target="_blank"><img src="./floatbinaryshow_files/rmb_32.png" title="人民币" alt="人民币 - 支付宝" style="border:none;vertical-align:middle;"></a> | <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=yifeng.ruan@gmail.com&currency_code=USD&amount=0.99&return=http://www.ruanyifeng.com/thank.html&item_name=Ruan%20YiFeng%27s%20Blog&undefined_quantity=1&no_note=0" target="_blank"><img src="./floatbinaryshow_files/dollar_32.png" alt="美元 - paypal" title="美元" style="border:none;vertical-align:middle;"></a> </li>
+</ul>
+                                </div>
+</article>
+                            </div>
+   <div id="gegz1">
+<p style="text-align:center;"><a href="https://www.yooli.com/secure/landing/8.html?sid=2014&aid=ad-ryf&utm_source=ruanyifeng.com" target="_blank"><img src="./floatbinaryshow_files/ad_youli.jpg" style="border:none;"></a></p>
+
+</div>
+<div id="related_entries">
+<h2>相关文章</h2>
+<ul>
+
+<li><strong>2013.11.29: <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html">Stack的三种含义</a></strong>
+
+                           <div class="entry-body">
+                              学习编程的时候，经常会看到stack这个词，它的中文名字叫做"栈"。
+
+                           </div>
+
+</li>
+
+ 
+<li><strong>2013.10.14: <a href="http://www.ruanyifeng.com/blog/2013/10/register.html">为什么寄存器比内存快？</a></strong>
+
+                           <div class="entry-body">
+                              计算机的存储层次（memory hierarchy）之中，寄存器（register）最快，内存其次，最慢的是硬盘。
+
+                           </div>
+
+</li>
+
+ 
+</ul>
+</div>
+
+<div id="entry_utility">
+<h2>功能链接</h2>
+<ul>
+<li><strong>前一篇：</strong><a href="http://www.ruanyifeng.com/blog/2010/06/zine.html">创业途径：手工杂志</a> </li>
+<li><strong>后一篇：</strong><a href="http://www.ruanyifeng.com/blog/2010/06/a_turkey_poster.html">一张土耳其海报</a></li>
+<li><strong>更多内容请访问：</strong><span class="homepage"><a href="http://www.ruanyifeng.com/blog/">首页</a></span>  » <a href="http://www.ruanyifeng.com/blog/archives.html">档案</a>  » 
+<a href="http://www.ruanyifeng.com/blog/computer/">理解计算机</a> 
+</li>
+
+<li>
+<!-- SiteSearch Google -->
+<form method="get" action="http://www.ruanyifeng.com/blog/search.html" target="_top" name="google_search">
+<input type="hidden" name="domains" value="www.ruanyifeng.com">
+<strong>站内搜索：</strong><input type="text" name="q" style="width:250px;" maxlength="255" value="编程">
+<input type="submit" name="sa" value="GO！">
+<span style="display:none;"><input type="radio" name="sitesearch" value="">
+<font size="-1" color="#000000">Web</font>
+<input type="radio" name="sitesearch" value="www.ruanyifeng.com" checked="checked">
+<font size="-1" color="#000000">www.ruanyifeng.com</font>
+</span>
+
+<input type="hidden" name="cx" value="016304377626642577906:b_e9skaywzq">
+<input type="hidden" name="cof" value="FORID:11">
+<input type="hidden" name="ie" value="UTF-8">
+</form>
+<!-- SiteSearch Google -->
+</li>
+<li><strong>Feed订阅：</strong>  <a href="http://feeds.feedburner.com/ruanyifeng" target="_blank"><img src="./floatbinaryshow_files/rss.png" height="16" width="16"></a></li>
+</ul>
+</div>
+
+<div id="googlead1">
+<h2>广告<a href="http://www.ruanyifeng.com/ads.html">（购买广告位）</a></h2>
+<div id="googlead1-inner">
+<div id="googlead1-left">
+<a href="http://www.tea942.com/?utm_source=ruanyifeng.com" target="_blank"><img src="./floatbinaryshow_files/ad_tea942.jpg" style="border:none;"></a>
+</div>
+<div id="googlead1-right">
+
+<a href="https://www.grjsq.me/1069807" target="_blank"><img src="./floatbinaryshow_files/ad_greenvpn_300.jpg" style="border:none;"></a>
+</div>
+</div>
+</div>
+                    
+
+                    <div id="comments" class="comments">
+
+
+    
+    
+        
+    <h2 class="comments-header">留言（45条）</h2>
+
+    <div id="comments-content" class="comments-content" style="clear: left;">
+        
+        <div id="comment-205975" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">半就业</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-205975">
+            <p>博主以前没有学过C语言？？</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-205975"><abbr class="published" title="2010-06-06T15:05:47+08:00">2010年6月 6日 15:05</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/%E5%8D%8A%E5%B0%B1%E4%B8%9A.html" title="半就业的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用半就业的这条留言" onclick="return CommentQuote(&#39;comment-quote-205975&#39;,&#39;半就业&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-205977" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">许通</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-205977">
+            <p>研究得如此透彻。。。我是大二得学生，以前也学过C语言，但觉得学得不够好，现正在从头看《C Primer Plus》.博主看的是哪一本教材呢？</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-205977"><abbr class="published" title="2010-06-06T15:30:05+08:00">2010年6月 6日 15:30</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/%E8%AE%B8%E9%80%9A.html" title="许通的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用许通的这条留言" onclick="return CommentQuote(&#39;comment-quote-205977&#39;,&#39;许通&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-205978" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">ddd</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-205978">
+            <p>我觉得研究这个细节真没有什么用。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-205978"><abbr class="published" title="2010-06-06T16:36:50+08:00">2010年6月 6日 16:36</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/ddd.html" title="ddd的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用ddd的这条留言" onclick="return CommentQuote(&#39;comment-quote-205978&#39;,&#39;ddd&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-205979" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">许通</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-205979">
+            <blockquote>
+<pre>引用ddd的发言：</pre>
+我觉得研究这个细节真没有什么用。
+</blockquote>
+
+<p>不同意你的看法，我觉得研究这些细节有助于加深对C语言本质的理解。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-205979"><abbr class="published" title="2010-06-06T17:34:59+08:00">2010年6月 6日 17:34</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/%E8%AE%B8%E9%80%9A.html" title="许通的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用许通的这条留言" onclick="return CommentQuote(&#39;comment-quote-205979&#39;,&#39;许通&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-205980" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">幻の上帝</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-205980">
+            <p>除了涉及到C语言关键字float以外，这个真的和语言本身毛关系都没有。什么叫“C语言的本质”？<br>
+用什么方法实现浮点数运算，输入输出的细节，都是语言实现和语言用户的事情。<br>
+</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-205980"><abbr class="published" title="2010-06-06T18:17:53+08:00">2010年6月 6日 18:17</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/%E5%B9%BB%E3%81%AE%E4%B8%8A%E5%B8%9D.html" title="幻の上帝的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用幻の上帝的这条留言" onclick="return CommentQuote(&#39;comment-quote-205980&#39;,&#39;幻の上帝&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-205981" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">睦</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-205981">
+            <p>資料在檔案讀取，或運算後可能發生的錯誤都很難以除錯，經過博主的說明，更加清楚二者型別間轉換的差異，果然魔鬼就藏在細節裡，謝謝您的分享~ :)</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-205981"><abbr class="published" title="2010-06-06T19:05:35+08:00">2010年6月 6日 19:05</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/%E7%9D%A6.html" title="睦的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用睦的这条留言" onclick="return CommentQuote(&#39;comment-quote-205981&#39;,&#39;睦&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-205983" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">z</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-205983">
+            <p>非科班的啊~</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-205983"><abbr class="published" title="2010-06-06T21:58:12+08:00">2010年6月 6日 21:58</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/z.html" title="z的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用z的这条留言" onclick="return CommentQuote(&#39;comment-quote-205983&#39;,&#39;z&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-205984" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">cc</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-205984">
+            <p>学到东西了，Thanks</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-205984"><abbr class="published" title="2010-06-06T22:28:27+08:00">2010年6月 6日 22:28</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/cc.html" title="cc的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用cc的这条留言" onclick="return CommentQuote(&#39;comment-quote-205984&#39;,&#39;cc&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-205985" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">Ruan YiFeng</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-205985">
+            <blockquote>
+<pre>引用半就业的发言：</pre>
+
+<p>博主以前没有学过C语言？？</p>
+
+</blockquote>
+
+<p>我以前自学过，好多地方看不懂。现在正好重新温习一遍。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-205985"><abbr class="published" title="2010-06-06T22:42:37+08:00">2010年6月 6日 22:42</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/Ruan%20YiFeng.html" title="Ruan YiFeng的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用Ruan YiFeng的这条留言" onclick="return CommentQuote(&#39;comment-quote-205985&#39;,&#39;Ruan YiFeng&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-205986" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">Ruan YiFeng</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-205986">
+            <blockquote>
+<pre>引用许通的发言：</pre>
+
+<p>博主看的是哪一本教材呢？</p>
+
+</blockquote>
+
+<p>我现在看的是一本国产教材，随手从图书馆里拿的，就不说是哪一本了。</p>
+
+<p>但是，我的这篇文章，很大部分出自《深入理解计算机系统》（Computer Systems: A Programmer Perspective）的第二章。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-205986"><abbr class="published" title="2010-06-06T22:46:16+08:00">2010年6月 6日 22:46</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/Ruan%20YiFeng.html" title="Ruan YiFeng的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用Ruan YiFeng的这条留言" onclick="return CommentQuote(&#39;comment-quote-205986&#39;,&#39;Ruan YiFeng&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-205989" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">凌风</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-205989">
+            <p>这些在大学计算机专业的教材上都有讲的，比如《计算机组成原理》。<br>
+不是很难，有兴趣的大家可以去看看。<br>
+博主是非科班的，不简单啊，毕竟是术业有专攻嘛。<br>
+无意中在网上看到了你写的《如何变得有思想？》，过来逛逛。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-205989"><abbr class="published" title="2010-06-06T23:39:39+08:00">2010年6月 6日 23:39</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/%E5%87%8C%E9%A3%8E.html" title="凌风的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用凌风的这条留言" onclick="return CommentQuote(&#39;comment-quote-205989&#39;,&#39;凌风&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-205990" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">roy_hu</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-205990">
+            <p>真要搞清楚，推荐What Every Computer Scientist Should Know About Floating-Point Arithmetic</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-205990"><abbr class="published" title="2010-06-06T23:55:57+08:00">2010年6月 6日 23:55</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/roy_hu.html" title="roy_hu的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用roy_hu的这条留言" onclick="return CommentQuote(&#39;comment-quote-205990&#39;,&#39;roy_hu&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-205993" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">鳞</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-205993">
+            <p>这行:<br>
+　float* pFloat=# /* pFloat表示num的内存地址，但是设为浮点数 */<br>
+--<br>
+GCC编译器编译不过去的.<br>
+error: cannot convert 'int*' to 'float*' in initialization|</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-205993"><abbr class="published" title="2010-06-07T08:58:08+08:00">2010年6月 7日 08:58</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/%E9%B3%9E.html" title="鳞的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用鳞的这条留言" onclick="return CommentQuote(&#39;comment-quote-205993&#39;,&#39;鳞&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-205994" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">半就业</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-205994">
+            <blockquote>
+<pre>引用鳞的发言：</pre>
+
+<p>这行:<br>
+　float* pFloat=&amp;num; /* pFloat表示num的内存地址，但是设为浮点数 */<br>
+--<br>
+GCC编译器编译不过去的.<br>
+error: cannot convert 'int*' to 'float*' in initialization|</p>
+
+</blockquote>
+强制类型转换一下
+float* pFloat=(float*)&amp;num;
+没试过，不过应该可以
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-205994"><abbr class="published" title="2010-06-07T09:33:29+08:00">2010年6月 7日 09:33</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/%E5%8D%8A%E5%B0%B1%E4%B8%9A.html" title="半就业的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用半就业的这条留言" onclick="return CommentQuote(&#39;comment-quote-205994&#39;,&#39;半就业&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-205995" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">半就业</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-205995">
+            <blockquote>
+<pre>引用ddd的发言：</pre>
+
+<p>我觉得研究这个细节真没有什么用。</p>
+
+</blockquote>
+
+<p>这个可是相当有用。明白了这个你就知道为什么整型变量可以通过移位来进行乘除法了，当然，还有很多技巧与此有关。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-205995"><abbr class="published" title="2010-06-07T09:49:31+08:00">2010年6月 7日 09:49</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/%E5%8D%8A%E5%B0%B1%E4%B8%9A.html" title="半就业的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用半就业的这条留言" onclick="return CommentQuote(&#39;comment-quote-205995&#39;,&#39;半就业&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-205996" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">Ruan YiFeng</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-205996">
+            <blockquote>
+<pre>引用鳞的发言：</pre>
+
+<p>GCC编译器编译不过去的.<br>
+error: cannot convert 'int*' to 'float*' in initialization|</p>
+
+</blockquote>
+
+<p>我的GCC可以编译啊，但是会产生一个指针类型不匹配的警告。<br>
+</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-205996"><abbr class="published" title="2010-06-07T09:58:27+08:00">2010年6月 7日 09:58</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/Ruan%20YiFeng.html" title="Ruan YiFeng的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用Ruan YiFeng的这条留言" onclick="return CommentQuote(&#39;comment-quote-205996&#39;,&#39;Ruan YiFeng&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-206001" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://www.purecy.net" href="http://www.purecy.net/" target="_blank" rel="nofollow">匿名懦夫</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-206001">
+            <p>没用？？</p>
+
+<p>这东西要是没用你手机上就不会有那么多软件可以用。</p>
+
+<p>手机CPU没有浮点处理器，一切浮点运算皆是使用定点数实现。</p>
+
+<p>将开发的算法移植到手机平台的过程中，会大量运用到本博文中提到的概念。</p>
+
+<p>更进一步，大量电子产品中都没有浮点处理器，包括貌似很高级的导弹也是如此。</p>
+
+<p>第一次海湾战争中，含冤死在飞毛腿导弹下的16名驻沙特美国大兵，会严重不同意你这个说法，正是因为爱国者导弹控制系统中定点数算法的累积误差，他们才会被没有被拦截到的飞毛腿导弹击中。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-206001"><abbr class="published" title="2010-06-07T21:03:40+08:00">2010年6月 7日 21:03</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/%E5%8C%BF%E5%90%8D%E6%87%A6%E5%A4%AB.html" title="匿名懦夫的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用匿名懦夫的这条留言" onclick="return CommentQuote(&#39;comment-quote-206001&#39;,&#39;匿名懦夫&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-206005" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">kain</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-206005">
+            <p>float* pFloat=#<br>
+这句一般是编译通不过的, 会报错, 我用VC试过了, 需要强制转换. 教材倒是都学过, 但是还真没注意到, 毕竟一般强制转换的都是类地址什么的, 基本数据类型间的转换倒是很少做.<br>
+</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-206005"><abbr class="published" title="2010-06-07T21:51:22+08:00">2010年6月 7日 21:51</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/kain.html" title="kain的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用kain的这条留言" onclick="return CommentQuote(&#39;comment-quote-206005&#39;,&#39;kain&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-206007" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="https://twitter.com/sterol" href="https://twitter.com/sterol" target="_blank" rel="nofollow">Drosophila</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-206007">
+            <blockquote>
+<pre>引用许通的发言：</pre>
+
+<p>研究得如此透彻。。。我是大二得学生，以前也学过C语言，但觉得学得不够好，现正在从头看《C Primer Plus》.博主看的是哪一本教材呢？</p>
+
+</blockquote>
+
+<p>握爪～～我也在从头学C语言，而且也是看的这本书。挺好玩的。</p>
+
+<p>楼上很多人说有没有用，我这非科班的业余人士不好做这种判断，不过我觉得，搞懂一个问题本身就是有趣且有意义的事清。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-206007"><abbr class="published" title="2010-06-07T23:59:26+08:00">2010年6月 7日 23:59</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/Drosophila.html" title="Drosophila的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用Drosophila的这条留言" onclick="return CommentQuote(&#39;comment-quote-206007&#39;,&#39;Drosophila&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-206023" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://blog.kingsamchen.com/" href="http://blog.kingsamchen.com/" target="_blank" rel="nofollow">KingsamChen</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-206023">
+            <p>float* pFloat=# /* pFloat表示num的内存地址，但是设为浮点数 */<br>
+这句如果不用强制类型转换，编译器应该不让过吧~<br>
+</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-206023"><abbr class="published" title="2010-06-08T17:44:44+08:00">2010年6月 8日 17:44</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/KingsamChen.html" title="KingsamChen的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用KingsamChen的这条留言" onclick="return CommentQuote(&#39;comment-quote-206023&#39;,&#39;KingsamChen&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-206088" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">LK</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-206088">
+            <p>很想知道浮点和定点的累积误差是怎么回事。。。<br>
+似乎浮点的误差是不可避免但可控，细节不清楚<br>
+请教</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-206088"><abbr class="published" title="2010-06-13T00:30:19+08:00">2010年6月13日 00:30</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/LK.html" title="LK的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用LK的这条留言" onclick="return CommentQuote(&#39;comment-quote-206088&#39;,&#39;LK&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-206091" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">Ruan YiFeng</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-206091">
+            <blockquote>
+<pre>引用LK的发言：</pre>
+
+<p>很想知道浮点和定点的累积误差是怎么回事。。。<br>
+似乎浮点的误差是不可避免但可控，细节不清楚<br>
+请教</p>
+
+</blockquote>
+
+<p>这是因为很多小数不能准确表示成二进制形式。比如0.4，你就无法写出它的精确二进制形式（即0.5的各次幂的累加），我们只能不断接近0.4，而不能达到它。<br>
+</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-206091"><abbr class="published" title="2010-06-13T07:36:26+08:00">2010年6月13日 07:36</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/Ruan%20YiFeng.html" title="Ruan YiFeng的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用Ruan YiFeng的这条留言" onclick="return CommentQuote(&#39;comment-quote-206091&#39;,&#39;Ruan YiFeng&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-206110" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">墨叶</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-206110">
+            <p>事实上VC和BC内部存储也是不一样的，用过的应该有印象</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-206110"><abbr class="published" title="2010-06-15T15:18:53+08:00">2010年6月15日 15:18</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/%E5%A2%A8%E5%8F%B6.html" title="墨叶的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用墨叶的这条留言" onclick="return CommentQuote(&#39;comment-quote-206110&#39;,&#39;墨叶&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-206301" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://www.lvyaming.com/loveclan" href="http://www.lvyaming.com/loveclan" target="_blank" rel="nofollow">loveclan</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-206301">
+            <p>IEEE浮点数应该是不享受结合律和交换律的，所以使用时要特别小心。而且CPU浮点数寄存器精度和标准浮点数不一样，详见 <a href="http://book.douban.com/subject/1229948/%E3%80%8AComputer" rel="nofollow">http://book.douban.com/subject/1229948/《Computer</a> Systems--A Programmer's Perspective》的第二章。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-206301"><abbr class="published" title="2010-06-26T23:44:29+08:00">2010年6月26日 23:44</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/loveclan.html" title="loveclan的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用loveclan的这条留言" onclick="return CommentQuote(&#39;comment-quote-206301&#39;,&#39;loveclan&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-206791" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">嘟嘟</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-206791">
+            <blockquote>
+<pre>引用ddd的发言：</pre>
+
+<p>我觉得研究这个细节真没有什么用。</p>
+
+</blockquote>
+
+<p>等你做通信就知道多有用了，需要自己解析算的。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-206791"><abbr class="published" title="2010-07-22T17:06:22+08:00">2010年7月22日 17:06</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/%E5%98%9F%E5%98%9F.html" title="嘟嘟的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用嘟嘟的这条留言" onclick="return CommentQuote(&#39;comment-quote-206791&#39;,&#39;嘟嘟&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-207554" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">pl</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-207554">
+            <p>说道浮点结构, 不得不提这个函数啊!!</p>
+
+<p>float InvSqrt (float x)<br>
+{<br>
+　　float xhalf = 0.5f*x;<br>
+　　int i = *(int*)&amp;x;<br>
+　　i = 0x5f3759df - (i&gt;&gt;1);<br>
+　　x = *(float*)&amp;i;<br>
+　　x = x*(1.5f - xhalf*x*x);<br>
+　　return x;<br>
+}</p>
+
+<p>传奇性的函数啊.</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-207554"><abbr class="published" title="2010-08-28T16:47:45+08:00">2010年8月28日 16:47</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/pl.html" title="pl的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用pl的这条留言" onclick="return CommentQuote(&#39;comment-quote-207554&#39;,&#39;pl&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-207910" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://www.cnblogs.com/iammatthew" href="http://www.cnblogs.com/iammatthew" target="_blank" rel="nofollow">matthew</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-207910">
+            <p>博文中的公式<br>
+　　V=(-1)^0×0.00000000000000000001001×2^(-126)=1.001×2^(-146)</p>
+
+<p>里面的-146应该是-126吧（以为指数是1-127）</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-207910"><abbr class="published" title="2010-09-16T14:07:01+08:00">2010年9月16日 14:07</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/matthew.html" title="matthew的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用matthew的这条留言" onclick="return CommentQuote(&#39;comment-quote-207910&#39;,&#39;matthew&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-208000" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">mafai</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-208000">
+            <p>E的真实值必须再<b>减</b>去一个中间数，对于8位的E，这个中间数是127</p>
+
+<p><br>
+比如，2^10的E是10，所以保存成32位浮点数时，必须保存成<b>10+127=137</b>，即10001001。</p>
+
+<p>那么，第一位的符号位s=0，有效数字M等于001后面再加20个0，凑满23位，指数E等于<b>3+127=130</b>，即10000010。</p>
+
+<p><br>
+上面是否应该是真实值加上一个中间数呢？因为下面两个例子均是使用 + 127</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-208000"><abbr class="published" title="2010-09-20T11:23:01+08:00">2010年9月20日 11:23</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/mafai.html" title="mafai的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用mafai的这条留言" onclick="return CommentQuote(&#39;comment-quote-208000&#39;,&#39;mafai&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-217354" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">timyuanzhiwei</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-217354">
+            <p>这个真的很有用！ 废话不说，谢谢分享。。。。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-217354"><abbr class="published" title="2011-04-29T22:41:41+08:00">2011年4月29日 22:41</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/timyuanzhiwei.html" title="timyuanzhiwei的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用timyuanzhiwei的这条留言" onclick="return CommentQuote(&#39;comment-quote-217354&#39;,&#39;timyuanzhiwei&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-243782" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">kevin</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-243782">
+            <p>（3）E全为1。这时，如果有效数字M全为0，表示±无穷大（正负取决于符号位s）；如果有效数字M不全为0，表示这个数不是一个数（NaN）。</p>
+
+<p>请教，为什么这个case里面M要区别全为0和非全为0的情况？</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-243782"><abbr class="published" title="2011-12-29T21:50:56+08:00">2011年12月29日 21:50</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/kevin.html" title="kevin的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用kevin的这条留言" onclick="return CommentQuote(&#39;comment-quote-243782&#39;,&#39;kevin&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-256694" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://ybfor.com" href="http://ybfor.com/" target="_blank" rel="nofollow">Robin</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-256694">
+            <p>不错。正好在看32位浮点数表示方法。原来有效位的第一位会省略的，主要是我看的计算机组成没讲清楚。现在豁然开朗。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-256694"><abbr class="published" title="2012-06-14T09:16:58+08:00">2012年6月14日 09:16</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/Robin.html" title="Robin的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用Robin的这条留言" onclick="return CommentQuote(&#39;comment-quote-256694&#39;,&#39;Robin&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-261780" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">atupal</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-261780">
+            <p>可以转载嘛？ 注明原文链接的</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-261780"><abbr class="published" title="2012-08-22T11:25:44+08:00">2012年8月22日 11:25</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/atupal.html" title="atupal的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用atupal的这条留言" onclick="return CommentQuote(&#39;comment-quote-261780&#39;,&#39;atupal&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-263976" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">OceanCloud</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-263976">
+            <p>然后，指数E还可以再分成三种情况：<br>
+（1）...<br>
+（2）...<br>
+（3）...<br>
+第2种情况中E是不是等于0-127（或者0-1023）？</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-263976"><abbr class="published" title="2012-09-27T00:10:51+08:00">2012年9月27日 00:10</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/OceanCloud.html" title="OceanCloud的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用OceanCloud的这条留言" onclick="return CommentQuote(&#39;comment-quote-263976&#39;,&#39;OceanCloud&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-265468" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://xudifsd.org/blog" href="http://xudifsd.org/blog" target="_blank" rel="nofollow">xudifsd</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-265468">
+            <p>博主关于第二部分中E=3+127解释得不多，详细见<a href="http://blog.csdn.net/linven1911/article/details/2596038" rel="nofollow">这篇文章的“规格化”部分</a></p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-265468"><abbr class="published" title="2012-10-29T15:10:28+08:00">2012年10月29日 15:10</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/xudifsd.html" title="xudifsd的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用xudifsd的这条留言" onclick="return CommentQuote(&#39;comment-quote-265468&#39;,&#39;xudifsd&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-265565" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">river</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-265565">
+            <p>多谢博主的解答。发现你的博文配图很好，不知道你是用什么工具做的呢</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-265565"><abbr class="published" title="2012-11-01T15:35:03+08:00">2012年11月 1日 15:35</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/river.html" title="river的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用river的这条留言" onclick="return CommentQuote(&#39;comment-quote-265565&#39;,&#39;river&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-269286" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">robin</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-269286">
+            <blockquote>
+<pre>引用matthew的发言：</pre>
+
+<p>博文中的公式<br>
+　　V=(-1)^0×0.00000000000000000001001×2^(-126)=1.001×2^(-146)</p>
+
+<p>里面的-146应该是-126吧（以为指数是1-127）</p>
+
+</blockquote>
+
+<p>不，应该就是-146，因为0.00000000000000000001001×2^(-126) = 0.00000000000000000001×1.001×2^(-126) = 1×2^(-20)×1.001×2^(-126) = 1.001×2^((-20)+(-126)) = 1.001×2^(-146)</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-269286"><abbr class="published" title="2013-03-02T11:49:57+08:00">2013年3月 2日 11:49</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/robin.html" title="robin的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用robin的这条留言" onclick="return CommentQuote(&#39;comment-quote-269286&#39;,&#39;robin&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-271159" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://marspring.mobi" href="http://marspring.mobi/" target="_blank" rel="nofollow">hoot</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-271159">
+            <p>很受用</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-271159"><abbr class="published" title="2013-05-01T20:15:55+08:00">2013年5月 1日 20:15</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/hoot.html" title="hoot的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用hoot的这条留言" onclick="return CommentQuote(&#39;comment-quote-271159&#39;,&#39;hoot&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-271231" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">matrix3d</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-271231">
+            <p>斯坦福大学的编程范式公开课里就讲到了博主说说的这些</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-271231"><abbr class="published" title="2013-05-03T09:34:56+08:00">2013年5月 3日 09:34</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/matrix3d.html" title="matrix3d的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用matrix3d的这条留言" onclick="return CommentQuote(&#39;comment-quote-271231&#39;,&#39;matrix3d&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-271558" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">想听什么baby</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-271558">
+            <p>受用，谢谢。这些才是最本质的。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-271558"><abbr class="published" title="2013-05-16T20:38:36+08:00">2013年5月16日 20:38</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/%E6%83%B3%E5%90%AC%E4%BB%80%E4%B9%88baby.html" title="想听什么baby的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用想听什么baby的这条留言" onclick="return CommentQuote(&#39;comment-quote-271558&#39;,&#39;想听什么baby&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-273719" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://weibo.com/u/1760263470" href="http://weibo.com/u/1760263470" target="_blank" rel="nofollow">小旺</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-273719">
+            <p>V=(-1)^0×0.00000000000000000001001×2^(-126)=1.001×2^(-146)<br>
+应该修改为：<br>
+V=(-1)^0×1.00000000000000000001001×2^(-126)<br>
+因为 M=000 0000 0000 0000 0000 1001（23b），转化为系数时，1自动加上，变成 1.000 0000 0000 0000 0000 1001(24b)</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-273719"><abbr class="published" title="2013-09-06T23:35:55+08:00">2013年9月 6日 23:35</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/%E5%B0%8F%E6%97%BA.html" title="小旺的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用小旺的这条留言" onclick="return CommentQuote(&#39;comment-quote-273719&#39;,&#39;小旺&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-284479" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://www.cnblogs.com/wbpmrck/" href="http://www.cnblogs.com/wbpmrck/" target="_blank" rel="nofollow">kaicui</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-284479">
+            <p>为什么指数要使用无符号整型来表示，然后在计算的时候再减去一个中间数？<br>
+为什么不直接使用有符号整数表示？</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-284479"><abbr class="published" title="2013-11-08T12:07:08+08:00">2013年11月 8日 12:07</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/kaicui.html" title="kaicui的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用kaicui的这条留言" onclick="return CommentQuote(&#39;comment-quote-284479&#39;,&#39;kaicui&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-293878" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">shmilyxbq</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-293878">
+            <p>做基础软件研发这些知识是绕不过去的，国内现在做的还少</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-293878"><abbr class="published" title="2013-12-20T17:14:27+08:00">2013年12月20日 17:14</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/shmilyxbq.html" title="shmilyxbq的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用shmilyxbq的这条留言" onclick="return CommentQuote(&#39;comment-quote-293878&#39;,&#39;shmilyxbq&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-299007" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">yiltoncent</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-299007">
+            <blockquote>
+<pre>引用pl的发言：</pre>
+
+<p>说道浮点结构, 不得不提这个函数啊!!</p>
+
+<p>float InvSqrt (float x)<br>
+{<br>
+　　float xhalf = 0.5f*x;<br>
+　　int i = *(int*)&amp;x;<br>
+　　i = 0x5f3759df - (i&gt;&gt;1);<br>
+　　x = *(float*)&amp;i;<br>
+　　x = x*(1.5f - xhalf*x*x);<br>
+　　return x;<br>
+}</p>
+
+<p>传奇性的函数啊.</p>
+
+</blockquote>
+前段时间我也看到这个函数，简直就是神一样的算法，对一个浮点书求根再倒数，使用了牛顿迭代逼近，最牛的是那个第一次猜测的书，不知道作者是怎么想到这样绝的方法。效率是C库的四倍啊！！！
+
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-299007"><abbr class="published" title="2014-01-25T16:26:15+08:00">2014年1月25日 16:26</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/yiltoncent.html" title="yiltoncent的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用yiltoncent的这条留言" onclick="return CommentQuote(&#39;comment-quote-299007&#39;,&#39;yiltoncent&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-299008" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">yiltoncent</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-299008">
+            <blockquote>
+<pre>引用小旺的发言：</pre>
+
+<p>V=(-1)^0×0.00000000000000000001001×2^(-126)=1.001×2^(-146)<br>
+应该修改为：<br>
+V=(-1)^0×1.00000000000000000001001×2^(-126)<br>
+因为 M=000 0000 0000 0000 0000 1001（23b），转化为系数时，1自动加上，变成 1.000 0000 0000 0000 0000 1001(24b)</p>
+
+</blockquote>
+
+<p>错了 E为0，所以M不需要自动加一</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-299008"><abbr class="published" title="2014-01-25T16:27:58+08:00">2014年1月25日 16:27</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/yiltoncent.html" title="yiltoncent的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用yiltoncent的这条留言" onclick="return CommentQuote(&#39;comment-quote-299008&#39;,&#39;yiltoncent&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-313068" class="comment">
+    <div id="comment-last" class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://MindCache.info" href="http://mindcache.info/" target="_blank" rel="nofollow">zeekvfu</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-313068">
+            <p>我是来吐槽博客页面排版的。:-)<br>
+关于代码的展示，个人觉得用 pre 标签比 blockquote 标签更合适。另外，对于每行代码都用 p 和 strong 标签，实现方式实在是有些 ugly。<br>
+另外没有代码高亮展示，不知道你中文博客用的什么框架（英文是 WordPress），可以找相关的代码高亮插件。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-313068"><abbr class="published" title="2014-04-14T21:57:51+08:00">2014年4月14日 21:57</abbr></a>
+ | <a href="http://www.ruanyifeng.com/blog/user/zeekvfu.html" title="zeekvfu的全部留言">档案</a> 
+ | <a href="http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html#comment-text" title="引用zeekvfu的这条留言" onclick="return CommentQuote(&#39;comment-quote-313068&#39;,&#39;zeekvfu&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    </div>
+        
+    
+
+
+    
+    
+    <div class="comments-open" id="comments-open">
+        <h2 class="comments-open-header">我要发表看法</h2>
+        <div class="comments-open-content">
+
+        
+            <div id="comment-greeting"></div>
+
+            <form method="post" action="http://www.ruanyifeng.com/cgi-bin/mtos/mt-comments.cgi" name="comments_form" id="comments-form" onsubmit="return pleaseWait();">
+                <input type="hidden" name="static" value="1">
+                <input type="hidden" name="entry_id" value="1407">
+                <input type="hidden" name="__lang" value="en">
+                <input type="hidden" name="parent_id" value="" id="comment-parent-id">
+                <input type="hidden" name="armor" value="1">
+                <input type="hidden" name="preview" value="">
+                <input type="hidden" name="sid" value="">
+                <div id="comments-open-data">
+            <div id="comments-open-text">
+                    <p><label for="comment-text">您的留言
+                    （HTML标签部分可用）</label></p>
+                    <p><textarea id="comment-text" name="text" rows="10" cols="50"></textarea></p>
+                </div>
+                    <div id="comment-form-name">
+                        <p><label for="comment-author">您的大名：</label></p>
+                        <p><input id="comment-author" name="author" size="30" value="">  <span class="hint"> «-必填</span></p>
+                    </div>
+                    <div id="comment-form-email">
+                        <p><label for="comment-email">电子邮件：</label></p>
+                        <p><input id="comment-email" name="email" size="30" value="">  <span class="hint"> «-必填，不公开</span></p>
+                    </div>
+                    <div id="comment-form-url">
+                        <p><label for="comment-url">个人网址：</label></p>
+                        <p><input id="comment-url" name="url" size="30" value="">  <span class="hint"> «-我信任你，不会填写广告链接</span></p>
+                    </div>
+                    <div id="comment-form-remember-me">
+                        <p>
+                        <label for="comment-bake-cookie">记住个人信息？</label><input type="checkbox" id="comment-bake-cookie" name="bakecookie" onclick="!this.checked?forgetMe(document.comments_form):rememberMe(document.comments_form)" value="1" accesskey="r"></p>
+                    </div>
+                </div>
+                    <div id="comment-form-reply" style="display:none">
+                    <input type="checkbox" id="comment-reply" name="comment_reply" value="" onclick="mtSetCommentParentID()">
+                    <label for="comment-reply" id="comment-reply-label"></label>
+                </div>
+                <div id="comments-open-captcha"></div>
+                <div id="comments-open-footer">
+<div id="wait" style="display:none;">
+<p><strong>正在发表您的评论，请稍候</strong></p>
+<p>
+<input type="text" name="percent" size="3" style="font-family:Arial; color:black;text-align:center; border-width:medium; border-style:none;">           
+<input type="text" name="chart" size="46" style="font-family:Arial;font-weight:bolder; color:black; padding:0px; border-style:none;">
+</p>
+</div>
+
+                    <p><input type="submit" accesskey="s" name="post" id="comment-submit" value="发表">  <span class="hint"> «- 点击按钮</span></p>
+                </div>
+            </form>
+
+
+        </div>
+    </div>
+
+    
+
+
+</div>
+
+
+
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        <script type="text/javascript" src="./floatbinaryshow_files/prism.js"></script>
+
+            <div id="footer">
+    <div id="footer-inner">
+        <div id="footer-content">
+<p><a href="http://www.ruanyifeng.com/contact.html">联系方式</a> | ruanyifeng.com 2003 - 2014
+<!--WEBBOT bot="Script" startspan PREVIEW="Site Meter" -->
+<script type="text/javascript" language="JavaScript">var site="sm3bomoocom"</script>
+<a target="_top" href="http://www.sitemeter.com/stats.asp?site=sm3bomoocom" id="idSiteMeterHREF"><img border="0" alt="Site Meter" src="./floatbinaryshow_files/meter.asp"></a><script type="text/javascript" language="JavaScript1.2" src="./floatbinaryshow_files/counter.js">
+</script>
+<noscript>
+&lt;a href="http://sm3.sitemeter.com/stats.asp?site=sm3bomoocom" target="_top"&gt;
+&lt;img src="http://sm3.sitemeter.com/meter.asp?site=sm3bomoocom" alt="Site Meter" border=0&gt;&lt;/a&gt;
+</noscript>
+<!-- Copyright (c)2002 Site Meter -->
+</p>
+
+        </div>
+    </div>
+</div>
+
+
+<div id="share_button_proto" style="display:none;"><a class="bshareDiv" href="http://www.bshare.cn/share" style="display: block; text-decoration: none; padding: 0px; margin: 0px; font-size: 12px; height: 21px; width: 51px;"><div class="bsPromo bsPromo1"></div><div class="buzzButton bsStyle10" style="height:21px;color:#333;;background:transparent url(http://static.bshare.cn/frame/images/button_custom10-zh-Orange.gif) no-repeat;text-align:center;width:51px;"></div><div style="clear:both;"></div></a><script type="text/javascript" charset="utf-8" src="./floatbinaryshow_files/buttonLite.js"></script>                                       
+<script type="text/javascript" charset="utf-8">
+bShare.addEntry({
+    title: document.getElementById("page-title").innerHTML,
+url:window.location.href
+});
+</script></div>
+<script>
+document.getElementById("share_button").innerHTML=document.getElementById("share_button_proto").innerHTML;
+</script>
+
+
+
+
+        </div>
+    </div><script type="application/javascript" src="./floatbinaryshow_files/analytics.js"></script>
+
+<div style="height: 0px; line-height: 0; font-size: 0px;"><object id="bshareFS" type="application/x-shockwave-flash" data="http://static.bshare.cn/flash/bfc.swf" width="0" height="0"><param name="movie" value="http://static.bshare.cn/flash/bfc.swf"><param name="allowScriptAccess" value="always"><param name="allowNetworking" value="all"></object></div><div id="bsBox" class="bsBox"><div class="bsClose">X</div><div class="bsTop"><div class="bsReturn">选择其他平台 &gt;&gt;</div><span style="margin-left:15px;">分享到</span><span class="bsPlatName"></span></div><div class="bsFrameDiv"><iframe class="bShareFrame" name="bsFrame541" frameborder="0" scrolling="no" allowtransparency="true"></iframe></div><div id="bsMorePanel" style="display: none;"></div></div><div id="transit-notify-list"><ul class="transit-list-inner"></ul></div><img src="./floatbinaryshow_files/cms.gif" style="display: none;"><img src="./floatbinaryshow_files/m.gif" style="display: none;"><img src="./floatbinaryshow_files/cms(1).gif" style="display: none;"><img src="./floatbinaryshow_files/cm" style="display: none;"><div id="bsPanelHolder"><div id="bsPanel" style="left: 954px; top: 293px; display: none;"><div class="bsTitle"><a style="float:left;height:20px;line-height:20px;font-weight:bold;" class="bsSiteLink" target="_blank" href="http://www.bshare.cn/intro">分享到...</a><a class="bsSiteLink" style="cursor:pointer;float:right;height:20px;line-height:20px;font-weight:bold;" onclick="document.getElementById(&#39;bsPanel&#39;).style.display=&#39;none&#39;;">X</a><div class="bsClear"></div></div><div class="bsClear"></div><div style="padding-left:8px;background:#fff;*height:244px;"><div style="height:47px;border-bottom:1px #ccc solid;padding:4px 0 4px 16px;margin-right:8px;_padding-left:12px;"><div class="bsRlogo" onmouseover="javascript:this.className=&#39;bsRlogoSel&#39;" onmouseout="javascript:this.className=&#39;bsRlogo&#39;"><a href="javascript:;" onclick="javascript:bShare.share(event,&#39;facebook&#39;);return false;" style="text-decoration:none;line-height:120%;"><div style="cursor:pointer;width:24px;height:24px;margin:0 18px 2px;background:url(http://static.bshare.cn/frame/images//logos/m2/facebook.gif) no-repeat;"></div><div style="cursor:pointer;text-align:center;width:60px;height:16px !important;overflow:hidden;color:inherit;white-space:nowrap;line-height:120% !important;">Facebook</div></a></div><div class="bsRlogo" onmouseover="javascript:this.className=&#39;bsRlogoSel&#39;" onmouseout="javascript:this.className=&#39;bsRlogo&#39;"><a href="javascript:;" onclick="javascript:bShare.share(event,&#39;twitter&#39;);return false;" style="text-decoration:none;line-height:120%;"><div style="cursor:pointer;width:24px;height:24px;margin:0 18px 2px;background:url(http://static.bshare.cn/frame/images//logos/m2/twitter.gif) no-repeat;"></div><div style="cursor:pointer;text-align:center;width:60px;height:16px !important;overflow:hidden;color:inherit;white-space:nowrap;line-height:120% !important;">Twitter</div></a></div><div class="bsRlogo" onmouseover="javascript:this.className=&#39;bsRlogoSel&#39;" onmouseout="javascript:this.className=&#39;bsRlogo&#39;"><a href="javascript:;" onclick="javascript:bShare.share(event,&#39;sinaminiblog&#39;);return false;" style="text-decoration:none;line-height:120%;"><div style="cursor:pointer;width:24px;height:24px;margin:0 18px 2px;background:url(http://static.bshare.cn/frame/images//logos/m2/sinaminiblog.gif) no-repeat;"></div><div style="cursor:pointer;text-align:center;width:60px;height:16px !important;overflow:hidden;color:inherit;white-space:nowrap;line-height:120% !important;">新浪微博</div></a></div></div><div class="bsLogoLink"><div class="bsLogo" onmouseover="javascript:this.className=&#39;bsLogoSel&#39;" onmouseout="javascript:this.className=&#39;bsLogo&#39;"><a href="javascript:;" title="Google+" onclick="javascript:bShare.share(event,&#39;gplus&#39;);return false;" style="background:url(http://static.bshare.cn/frame/images//logos/s4/gplus.png) no-repeat;">Google+</a></div><div class="bsLogo" onmouseover="javascript:this.className=&#39;bsLogoSel&#39;" onmouseout="javascript:this.className=&#39;bsLogo&#39;"><a href="javascript:;" title="QQ空间" onclick="javascript:bShare.share(event,&#39;qzone&#39;);return false;" style="background:url(http://static.bshare.cn/frame/images//slogos_sprite8.png) no-repeat 0 -1566px;">QQ空间</a></div><div class="bsLogo" onmouseover="javascript:this.className=&#39;bsLogoSel&#39;" onmouseout="javascript:this.className=&#39;bsLogo&#39;"><a href="javascript:;" title="网易微博" onclick="javascript:bShare.share(event,&#39;neteasemb&#39;);return false;" style="background:url(http://static.bshare.cn/frame/images//slogos_sprite8.png) no-repeat 0 -1332px;">网易微博</a></div><div class="bsLogo" onmouseover="javascript:this.className=&#39;bsLogoSel&#39;" onmouseout="javascript:this.className=&#39;bsLogo&#39;"><a href="javascript:;" title="飞信" onclick="javascript:bShare.share(event,&#39;feixin&#39;);return false;" style="background:url(http://static.bshare.cn/frame/images//slogos_sprite8.png) no-repeat 0 -702px;">飞信</a></div><div class="bsLogo" onmouseover="javascript:this.className=&#39;bsLogoSel&#39;" onmouseout="javascript:this.className=&#39;bsLogo&#39;"><a href="javascript:;" title="开心网" onclick="javascript:bShare.share(event,&#39;kaixin001&#39;);return false;" style="background:url(http://static.bshare.cn/frame/images//slogos_sprite8.png) no-repeat 0 -1008px;">开心网</a></div><div class="bsLogo" onmouseover="javascript:this.className=&#39;bsLogoSel&#39;" onmouseout="javascript:this.className=&#39;bsLogo&#39;"><a href="javascript:;" title="饭否" onclick="javascript:bShare.share(event,&#39;fanfou&#39;);return false;" style="background:url(http://static.bshare.cn/frame/images//slogos_sprite8.png) no-repeat 0 -666px;">饭否</a></div><div class="bsLogo" onmouseover="javascript:this.className=&#39;bsLogoSel&#39;" onmouseout="javascript:this.className=&#39;bsLogo&#39;"><a href="javascript:;" title="雪球" onclick="javascript:bShare.share(event,&#39;xueqiu&#39;);return false;" style="background:url(http://static.bshare.cn/frame/images//logos/s4/xueqiu.png) no-repeat;">雪球</a></div></div><div class="bsLogoLink"><div class="bsLogo" onmouseover="javascript:this.className=&#39;bsLogoSel&#39;" onmouseout="javascript:this.className=&#39;bsLogo&#39;"><a href="javascript:;" title="腾讯微博" onclick="javascript:bShare.share(event,&#39;qqmb&#39;);return false;" style="background:url(http://static.bshare.cn/frame/images//slogos_sprite8.png) no-repeat 0 -1512px;">腾讯微博</a></div><div class="bsLogo" onmouseover="javascript:this.className=&#39;bsLogoSel&#39;" onmouseout="javascript:this.className=&#39;bsLogo&#39;"><a href="javascript:;" title="搜狐微博" onclick="javascript:bShare.share(event,&#39;sohuminiblog&#39;);return false;" style="background:url(http://static.bshare.cn/frame/images//slogos_sprite8.png) no-repeat 0 -1800px;">搜狐微博</a></div><div class="bsLogo" onmouseover="javascript:this.className=&#39;bsLogoSel&#39;" onmouseout="javascript:this.className=&#39;bsLogo&#39;"><a href="javascript:;" title="豆瓣网" onclick="javascript:bShare.share(event,&#39;douban&#39;);return false;" style="background:url(http://static.bshare.cn/frame/images//slogos_sprite8.png) no-repeat 0 -540px;">豆瓣网</a></div><div class="bsLogo" onmouseover="javascript:this.className=&#39;bsLogoSel&#39;" onmouseout="javascript:this.className=&#39;bsLogo&#39;"><a href="javascript:;" title="人人网" onclick="javascript:bShare.share(event,&#39;renren&#39;);return false;" style="background:url(http://static.bshare.cn/frame/images//slogos_sprite8.png) no-repeat 0 -1674px;">人人网</a></div><div class="bsLogo" onmouseover="javascript:this.className=&#39;bsLogoSel&#39;" onmouseout="javascript:this.className=&#39;bsLogo&#39;"><a href="javascript:;" title="QQ好友" onclick="javascript:bShare.share(event,&#39;qqim&#39;);return false;" style="background:url(http://static.bshare.cn/frame/images//logos/s4/qqim.png) no-repeat;">QQ好友</a></div><div class="bsLogo" onmouseover="javascript:this.className=&#39;bsLogoSel&#39;" onmouseout="javascript:this.className=&#39;bsLogo&#39;"><a href="javascript:;" title="Instapaper" onclick="javascript:bShare.share(event,&#39;instapaper&#39;);return false;" style="background:url(http://static.bshare.cn/frame/images//slogos_sprite8.png) no-repeat 0 -954px;">Instapaper</a></div><div class="bsLogo" onmouseover="javascript:this.className=&#39;bsLogoSel&#39;" onmouseout="javascript:this.className=&#39;bsLogo&#39;"><a href="javascript:;" title="美味书签" onclick="javascript:bShare.share(event,&#39;delicious&#39;);return false;" style="background:url(http://static.bshare.cn/frame/images//slogos_sprite8.png) no-repeat 0 -432px;">美味书签</a></div></div><div class="bsClear"></div></div><div style="height:20px;line-height:20px;padding:0 8px;border-top:1px solid #e8e8e8;color:#666;background:#f2f2f2;"><div class="buzzButton" style="float:left;">更多平台... <font style="font-weight:normal;">(133)</font></div><div id="bsPower" style="float:right;text-align:right;overflow:hidden;height:100%;"><a class="bsSiteLink" style="font-size:10px;vertical-align:text-bottom;line-height:24px;cursor:pointer;" href="http://www.bshare.cn/" target="_blank"><span style="font-size:10px;vertical-align:text-bottom;"><span style="color:#f60;">b</span>Share</span></a></div></div></div></div></body><iframe frameborder="0" marginheight="0" marginwidth="0" scrolling="no" width="2" height="2" src="./floatbinaryshow_files/log.html" style="display: none;"></iframe><script src="./floatbinaryshow_files/saved_resource"></script></html>

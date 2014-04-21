@@ -1,0 +1,17 @@
+* 基础
+** stdout/stderr
+   stdout和stderr 是不同的设备描述符, stdout是块设备, stderr则不是. 对于块设备, 只有当如下情况发生时才会
+   被输出: 1: 遇到回车, 2: 缓冲区满, 3:flush被调用.
+   例子:
+   #inlcude <stdio.h>
+   #inlcude <unistd.h>
+   int main() {
+       while(1) {
+           fprintf(stdout, "hello-std-out ");
+           fprintf(stderr, "hello-std-err ");
+           sleep(1);
+       }
+       return 0;
+   }
+   
+   
