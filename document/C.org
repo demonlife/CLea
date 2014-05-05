@@ -1,4 +1,4 @@
-*  容易忘记的知识点
+* 容易忘记的知识点
 ** sizeof
    sizeof返回值是 unsigned 的, 在做比较的时候需要小心
    sizeof是一个操作符, 不是函数, 因此在计算类似 sizeof(i++) 时, 并不会将i的加一, 因为求其i++的类型size,
@@ -61,6 +61,69 @@
    具体的浮点数存储方式可以参看http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html
    具体计算方法如下:
    计算机中得浮点数存储标准是: 根据国际标准IEEE 754, 
+   C99 中提供了对复数的支持,  用两个相同类型的浮点数分别表示复数的实部和虚部
+** 数据类型(char/int/...) 
+   由于在不同系统上 char 可能代表有符号或无无符号 8 位整数,因此建议使用
+   unsigned char / signed char 来表示示具体的类型
+   在stdint.h中定义一些更加明确的整数类型, 以及各种整数类型的大小限制
+   在stdint.h中同样给出了指针的定义
+   stdint.h中定义了一些辅助宏
+   #if __WORDSIZE == 64
+   # define __INT64_C(c) c ## L
+   # define __UINT64_C(c) c ## UL
+   #else
+   # define __INT64_C(c) c ## LL
+   # define __UINT64_C(c) c ## ULL
+   #endif
+   字符常量默认是int，除非用前置L表示wchar_t宽字符类型
+   在Linux中，默认字符集是UTF-8，可以用wctomb等函数进行转换，wchar_t默认是4字节，
+   足以容纳所有UCS-4 unicode字符。
+   LC_CTYPE的定义在locale.h中
+   wchar_t字符串以一个4个字节的NULL结束
+   size_t:在 32 位和 64 位平台长度不同
+** 运算符
+   C99 新增的内容，可以用直接用如下语法声明
+   (类型 名称){初始化列表}
+   如果是静态或全局变量，则初始化列表必须是编译期常量
+** 枚举
+   省略枚举小小标签用用来代替宏定义常量
+   enum { BLACK = 1, RED, GREEN = 1, YELLOW };
+** 语句块
+   语句块代表了一个作用域，在语句块内声明的自动变量超出范围后立即被释放。
+   最后一个表达式的值被当作语句块的返回值。
+** GCC的switch扩展
+     char c = 'C';
+     switch(c) {
+     case 'a' ... 'z':
+       printf("a..z\n");
+       break;
+     case 'A' ... 'Z':
+       printf("A..Z\n");
+       break;
+     }
+** longjmp
+   setjmp 将当前位置的相关信息 (堆栈帧、寄存器等) 保存到 jmp_buf 结构中,
+   并返回 0。当后续代码执行行 longjmp 跳转时,需要提供一一个状态码。
+   代码执行行绪将返回 setjmp 处,并返回 longjmp所提供的状态码
+** 函数
+   gcc支持嵌套函数扩展
+   typedef void(*func_t)();
+
+   func_t test() {
+     void func1() {
+       printf("%s\n", __func__);
+     }
+     return func1;
+   }
+   内层函数可以 "读写" 外层函数的参数和变量,外层变量必须在内嵌函数之前定义。
+   C函数默认采用cdecl调用约定，参数从右往左入栈，且由调用者负责参数入栈和清理。
+
+   当数组作为函数的参数时，总是被隐式的转换为指向数组第一元素的指针，即再也无法用
+   sizeof获取数组的实际长度了。
+** 指针
+   void* 被称为万能指针，可以代表任何对象的地址,但没有该对象的类型。
+   也就是说必须转型后才能进行行对象操作。
+   void* 指针可以与其他任何类型指针进行行隐式转换
    
 * MakeFile
   参见 referencedata/makefile.pdf
