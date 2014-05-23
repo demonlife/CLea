@@ -1,2 +1,4 @@
 * 数学常数e的含义
   http://www.ruanyifeng.com/blog/2011/07/mathematical_constant_e.html
+* 4G与3G的区别
+  http://jianshu.io/p/845472a0293e
