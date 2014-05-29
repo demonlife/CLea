@@ -172,6 +172,8 @@
 ** 调试
    习惯使用assert宏进行函数参数和执行条件判断，该宏位于#include <assert.h>中
    如果在编译release版本时，加上-DNDEBUG参数就可以取消assert
+** 副作用
+   改变计算机存储单元里的数据或者做输入输出操作
 * MakeFile
   参见 referencedata/makefile.pdf
 * 代码优化
