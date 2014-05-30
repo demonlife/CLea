@@ -180,7 +180,6 @@
    当b！=0时， a = (a/b)*b + a % b， %运算符的结果总是与被除数同号
    递归和循环式等价的，用循环能做的事情使用递归也能做，有些编译器会对尾递归做优化，这样尾递归就不会存在栈溢出的问题
    编译的过程分为词法解析和语法解析，在词法阶段编译器总是从前向后找到最长的合法token
->>>>>>> 59c79bdec8413e2df1ca3a26509c8e5f5dce88f1
 * MakeFile
   参见 referencedata/makefile.pdf
 * 代码优化
@@ -192,6 +191,10 @@
   http://www.cnblogs.com/balaamwe/archive/2012/01/07/2316076.html
   
   ASNI C和标准C是一个概念。
-  
 * gcc的特性
   gcc的扩展特性允许嵌套定义函数，但是C99标准是不允许嵌套定义函数的
+* SDS: 一个简易动态字符串库
+  redis的源码中使用到了该sds的功能
+  http://blog.jobbole.com/68119/
+  扩展阅读： C语言结构体里的成员数组和指针
+  http://coolshell.cn/articles/11377.html

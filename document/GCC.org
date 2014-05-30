@@ -1,0 +1,23 @@
+* GNU C的特殊功能
+** __attribute__ 的用法说明
+   http://blog.csdn.net/ithomer/article/details/6566739
+   __attribute__ 可以设置函数属性，变量属性和类型属性
+   在编译时需要使用-Wall参数来激活该功能，并且在代码中为了兼容性，可以使用__GUNC__宏
+   __attribute__属性可以给被声明的函数加上类似printf或者scanf的特征，它可以使编译器检查函数声明和函数实际调用参数之间的格式化字符串是否匹配
+*** 函数属性
+    函数属性可以帮组开发者把一些特性添加的函数申明中，从而可以使编译器在错误检查方面功能更加强大。
+    __attribute__ 机制也很容易同非GNU应用做到兼容之功效
+
+    format的语法格式为：
+    format (archetype, string-index, first-to-check)
+    format属性告诉编译器，按照printf, scanf, strftime或strfmon的参数表格式规则对该函数的参数进行检查。“archetype”指定是哪种风格；“string-index”指定传入函数的第几个参数是格式化字符串；“first-to-check”指定从函数的第几个参数开始按上述规则进行检查。
+    具体使用格式如下：
+    __attribute__((format(printf,m,n)))
+    __attribute__((format(scanf,m,n)))
+    m：第几个参数为格式化字符串，n：参数集合中的第一个，即参数“…”里的第一个参数在函数参数总数排在第几
+
+    自定义自己的函数
+    extern void myprintf(const char *format, ...)
+    __attribute__((format(printf, 1, 2))); // 这里其实只能算是函数的声明，要想使用还需要定义函数
+
+    void myprintf(const char *format, ..) { ... } // 函数的定义
