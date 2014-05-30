@@ -2,3 +2,5 @@
   http://www.ruanyifeng.com/blog/2011/07/mathematical_constant_e.html
 * 4G与3G的区别
   http://jianshu.io/p/845472a0293e
+* 斐波那契数列与求最大公约数之间的关系
+  如果Euclid算法需要k步来计算两个数的GCD，那么这两个数之中较小的一个必然大于等于Fibonacci数列的第k项
