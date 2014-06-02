@@ -1,5 +1,7 @@
 * 数学常数e的含义
   http://www.ruanyifeng.com/blog/2011/07/mathematical_constant_e.html
+* 浮点数的二进制表示
+  http://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html
 * 4G与3G的区别
   http://jianshu.io/p/845472a0293e
 * 斐波那契数列与求最大公约数之间的关系
