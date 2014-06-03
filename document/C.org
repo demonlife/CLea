@@ -201,3 +201,13 @@
   http://blog.jobbole.com/68119/
   扩展阅读： C语言结构体里的成员数组和指针
   http://coolshell.cn/articles/11377.html
+* C标准的规定
+** 术语implementation-defined, unspecified和undefined
+   implementation-defined：C标准没有明确规定，但是要求编译器必须对此做出明确的规定，并
+   写在编译器的文档中
+
+   unspecified：C标准没有明确规定按哪种方式处理，编译器可以自己决定，并且也不必写在编译器
+   文档中，这样即便是用同一个编译器的不同版本来编译，可能得到的结果也不同。
+
+   undefined：C标准没规定怎么处理，编译器也可能没有规定，甚至也没做出错处理，有很多
+   undefined的情况编译器是检查不出来的，最终会导致运行时错误。
