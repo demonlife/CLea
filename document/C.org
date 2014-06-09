@@ -183,6 +183,9 @@
    如果用于初始化的字符串字面值比数组刚好长出一个Null字符的长度，比如：
    char str[14] = "Hello, world.\n";
    则数组str不包含Null字符，并且编译器不会给出警告
+   注意： &, | , ^运算符都是要做usual arithmetic conversion的（其中一步integer promotion），所以
+   在C语言中其实不存在8位整数的位运算，操作数在做位运算之前至少都被提升至int型了。
+   建议只对无符号数做移位运算，因为有符号数的移位运算比较复杂。
 * MakeFile
   参见 referencedata/makefile.pdf
 * 代码优化
