@@ -21,3 +21,5 @@
     __attribute__((format(printf, 1, 2))); // 这里其实只能算是函数的声明，要想使用还需要定义函数
 
     void myprintf(const char *format, ..) { ... } // 函数的定义
+** 查看gcc默认会查找的目录
+   gcc -print-search-dirs
