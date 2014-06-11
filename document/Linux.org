@@ -131,3 +131,6 @@
    man 3 <function>
    man -k <function> 搜索相关的信息
    man -wa printf 查看函数所在的手册文件
+** od命令
+   od -tx1 -tc -Ax filename：-tx1表示将文件中的字节以16进制列出来，每组一个字节
+   -tc表示将文件中的ASCII码以字符形式列出来。-Ax：以16进制显示文件中的地址
