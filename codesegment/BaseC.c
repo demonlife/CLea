@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
+#include <string.h>
 
 int main(void) {
   setlocale(LC_CTYPE, "en_US.UTF-8"); // locale.h
@@ -40,7 +41,7 @@ int main(void) {
   }
   #endif
 
-  #if 1
+  #if 0
   int *pi = &(int){ 123 };
   printf("%d\n", *pi);
   int *x = (int[]){1, 2, 3, 4};
@@ -74,6 +75,21 @@ int main(void) {
     break;
   }
   #endif
+  
+#if 1
+  // 字符串分割
+  
+  //strtok是不可重入的
+  char str[] = "root:x::0:root:/root:/bin/bash:";
+  char *token;
+  token = strtok(str, ":");
+  printf("token = %s \n", token);
+  while ((token = strtok(NULL, ":")) != NULL)
+    printf("%s\n", token);
+  
+  //strtok_r是可重入的
+  
+#endif
   
   return 0;
 }

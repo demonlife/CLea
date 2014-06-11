@@ -79,7 +79,7 @@ int main()
 // scanf中的”%[^r]“是从中作梗的东西。意思是遇到字符r就结束了
 #endif
 
-#if 1
+#if 0
 #include <iostream>
 #include <vector>
  
@@ -110,5 +110,27 @@ int main(int argc, char ** argv)
     vector<UINT4> foo;
  
 return(0);
+}
+#endif
+
+#if 1
+// 解释原因, 1的输出为什么不对， 2的输出就是对的
+#include <stdio.h>
+#include <string.h>
+
+static const char *msg[] = {"Sunday", "Monday", "Tuesday", "Wednesday",
+                            "Thursday", "Friday", "Saturday"};
+char *get_a_day(int idx) {
+  static char buf[20];
+  strcpy(buf, msg[idx]);
+  return buf;
+}
+
+int main(void) {
+  printf("%s %s\n", get_a_day(0), get_a_day(1)); // 1
+
+  printf("%s\n", get_a_day(0)); //2
+  printf("%s\n", get_a_day(1)); //2
+  return 0;
 }
 #endif
