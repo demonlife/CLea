@@ -237,3 +237,25 @@
 ** 管道
    <code: pipeuse.c>
    
+* 二进制文件
+  http://jianshu.io/p/0e0005cc0928
+  linker的介绍：http://lwn.net/Articles/276782/
+  动态链接库的文件在运行时需要ld.so做很多事， ld.so会通过ELF文件中
+  的信息来找到这个函数的真正内存地址并将其记录到procedure linkage table
+  即PLT中。可以使用man ld.so查看相关的文档。
+** 可以应用于二进制文件的命令
+   file: 查看文件的类型，其工作原理时根据系统中的magic文件，读取
+   文件的开头部分来判定文件的类型。
+   xxd: 以16进制和ascii的方式查看文件的内容
+   strings: 可以看到文件的C风格的字符串
+   echo "0005da: 6865 6c6c 6f20" | xxd -r - filename:
+   修改filename文件中0005da的值为：6865 6c6c 6f20
+   nm -l filename: 列出ELF中包含的symbols，显示中的T表示在ELF的
+   .text section中， U：该符号还未定义，即需要运行时由ld.so来定义
+   ldd filename: 查看filename以来的动态库
+   string -a filename: 读取filename包括非用户区的所有字符串。
+   调试信息是直接存在ELF文件中
+   readelf -l：列出所有的segment和包含的section之间的关系
+   readelf -x .rodata filename： 查看filename的rodata段的数据
+   readelf -S :列出所有的section
+   strip filename：将调试信息从ELF中消去
