@@ -259,3 +259,5 @@
    readelf -x .rodata filename： 查看filename的rodata段的数据
    readelf -S :列出所有的section
    strip filename：将调试信息从ELF中消去
+* 位反转
+  http://blog.jobbole.com/70993/
