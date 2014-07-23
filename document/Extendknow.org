@@ -43,3 +43,7 @@
    (?(group)yes|no):如果堆栈上存在名为group的捕获内容的话，继续匹配yes部分的表达式，否则匹配no部分的
    (?!)零宽度负先行断言，由于没有后缀表达式，试图匹配总是失败
    
+** 内存溢出原理分析
+   http://qing.blog.sina.com.cn/1745498822/680a32c633002y78.html
+   OOM全称是Out Of Memory，指的是kernel因分配不出内存而报的错误，同时会触发kernel调用OOM killer杀进程来解除这种状况。
+
