@@ -47,3 +47,13 @@
    http://qing.blog.sina.com.cn/1745498822/680a32c633002y78.html
    OOM全称是Out Of Memory，指的是kernel因分配不出内存而报的错误，同时会触发kernel调用OOM killer杀进程来解除这种状况。
 
+* 字符编码
+  http://blog.segmentfault.com/stephenlee/1190000000489202
+  为了兼容ASCII，大部分使用GB2312的程序都采用EUC存储方法。
+  要明确 UTF-8（8-bit Unicode Transformation Format）是在统一码（Unicode）基础上细化并优化后的
+  一种长度可变的字符编码方式，它是实现 Unicode 的方式之一，除了 UTF-8，还有UTF-16，UTF-32 等都可以实现 Unicode，
+  但是 UTF-8 相对而言是用的最为广泛的。
+  UTF-8 可以使用1到4个字节来，它通过自身的规则能够灵活地变化长度来存储 Unicode 字符
+
+  http://weibo.com/fav?leftnav=1&wvr=5
+  
