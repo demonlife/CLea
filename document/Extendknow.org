@@ -60,3 +60,5 @@
 * 加密算法
 ** RSA 原理
    http://www.ruanyifeng.com/blog/2013/06/rsa_algorithm_part_one.html
+* 技能表
+  知道创宇研发技能表:http://blog.knownsec.com/Knownsec_RD_Checklist/v2.2.html
