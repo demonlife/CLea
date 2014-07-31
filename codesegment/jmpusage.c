@@ -24,10 +24,13 @@ int main(int argc, char *argv[]) {
 }
 #endif
 
+// gcc 支持函数嵌套
 typedef void(*func_t)();
 func_t test() {
+  int test_a = 10;
   void func1() {
     printf("%s\n", __func__);
+    printf("test_a = %d\n", test_a);
   }
   return func1;
 }

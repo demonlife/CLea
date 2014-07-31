@@ -36,10 +36,14 @@ void test3(const char *format, ...) {
   va_end(args);
 }
 
+// 宏定义
+#define println(format, ...) ({                 \
+  printf(format "\n", __VA_ARGS__);})
+
 int main(int argc, char *argv[]) {
   test(3, 11, 22, 33);
   test2("hello", "aa", "bb", "cc", "dd", NULL);
   test3("%s, %d\n", "hello, world!", 1234);
-
+  println("%s, %d", "string", 1234);
   return 1;
 }
