@@ -134,3 +134,37 @@
 ** od命令
    od -tx1 -tc -Ax filename：-tx1表示将文件中的字节以16进制列出来，每组一个字节
    -tc表示将文件中的ASCII码以字符形式列出来。-Ax：以16进制显示文件中的地址
+* Grub2引导LinuxISO进行安装及救援
+  http://os.51cto.com/art/201408/448008.htm
+** debian 的使用方法
+*** 系统安装方式的引导
+    首先下载debina的iso，之后在下载initrd.gz、vmlinuz，或者是将iso文件中的这两个文件解压出来。
+    启动系统进入grub2模式，并输入如下命令：
+    set root=(hd0,2)
+    linux /debian_amd64/vmlinuz #vmlinuz的路径
+    initrd /debian_amd64/initrd.gz #initrd的路径
+    boot
+    解释： root=(hd0,2)指定了系统当前的活动分区为第一块硬盘的第二分区。
+*** 系统救援模式的引导
+    set root=(hd0,2)  
+    linux /debian_amd64/vmlinuz linux rescue/enable=true 
+    initrd /debian_amd64/initrd.gz  
+    boot rescue/enable=true 
+    系统救援模式的启动主要是在GRUB2中需要加入参数rescue/enable=true,这样系统启动时将进入紧急救援模式
+** centos7的使用方法
+*** 系统安装方式引导
+    系统启动直接进入GRUB2模式，在GRUB2命令中输入如下命令
+    set root=(hd0,2)  
+    loopbadk loop /CentOS7/CentOS7.iso  
+    linux (loop)/isolinux/vmlinuz linux repo=hd:/dev/sdg2:/CentOS7  
+    initrd (loop)/isolinux/initrd.gz  
+    boot 
+    其中repo=hd:/dev/sdg2:/CentOS7参数中hd代表使用硬盘安装，/dev/sdg2代表ISO镜像所在分区，/CentOS7代表ISO镜像所在目录。
+    “:”应该是参数格式要求的分割符，请用户按照自己ISO所在目录和分区进行修改。关于分区问题需要说明下，
+    /CentOS7安装程序启动后会将安装在计算机上的硬盘设置成为/dev/sda
+*** 系统救援模式的引导
+    set root=(hd0,2)  
+    loopbadk loop /CentOS7/CentOS7.iso  
+    linux (loop)/isolinux/vmlinuz linux rescue repo=hd:/dev/sdg2:/CentOS7  
+    initrd (loop)/isolinux/initrd.gz  
+    boot linux rescue

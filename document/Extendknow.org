@@ -54,9 +54,7 @@
   一种长度可变的字符编码方式，它是实现 Unicode 的方式之一，除了 UTF-8，还有UTF-16，UTF-32 等都可以实现 Unicode，
   但是 UTF-8 相对而言是用的最为广泛的。
   UTF-8 可以使用1到4个字节来，它通过自身的规则能够灵活地变化长度来存储 Unicode 字符
-
-  http://weibo.com/fav?leftnav=1&wvr=5
-  
+  http://mp.weixin.qq.com/s?__biz=MzA5MTY2NTcwNw==&mid=201226425&idx=1&sn=5a9846e6cc18012ef5b1f5216c2addbd#rd 
 * 加密算法
 ** RSA 原理
    http://www.ruanyifeng.com/blog/2013/06/rsa_algorithm_part_one.html
